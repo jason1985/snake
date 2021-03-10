@@ -2,19 +2,32 @@ const BG_COLOUR = 'black'
 const SNAKE_COLOUR = '#22b14c'
 const FOOD_COLOUR = '#e66916'
 
+const slider = document.getElementById('slider')
+console.log(slider.value)
+
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
 canvas.width = 400
 canvas.height = 400
 
-const FR = 10 //frame rate 10 frames per second
+function updateSlider() {
+  init()
+}
+
+let interv
+let FR = slider.value //frame rate 10 frames per second
 const S = 20 // pixels per square size
 const T = canvas.width / S // SCREEN SIZE
 
 let pos, vel, food, snake
 
 function init() {
+  if (interv) {
+    clearInterval(interv)
+  }
+
+  FR = slider.value
   pos = { x: 10, y: 10 }
   vel = { x: 0, y: 0 }
 
@@ -25,6 +38,11 @@ function init() {
   ]
 
   randomFood()
+
+  interv = setInterval(() => {
+    requestAnimationFrame(gameLoop)
+    // gameLoop()
+  }, 1000 / FR)
 }
 
 init()
@@ -77,10 +95,10 @@ function keydown(e) {
   }
 }
 
-setInterval(() => {
-  requestAnimationFrame(gameLoop)
-  // gameLoop()
-}, 1000 / FR)
+// interv = setInterval(() => {
+//   requestAnimationFrame(gameLoop)
+//   // gameLoop()
+// }, 1000 / FR)
 
 function gameLoop() {
   //paint canvas background
@@ -146,4 +164,8 @@ function gameLoop() {
     snake.push({ ...pos })
     snake.shift()
   }
+
+  //update score
+  let el = document.querySelector('.score')
+  el.innerHTML = `Score: ${(snake.length - 3) * 100}`
 }
